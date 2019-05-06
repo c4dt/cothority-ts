@@ -50,12 +50,22 @@ message Read {
 // These are the messages used in the API-calls
 // ***
 
+// Authorise - deprecated, please use Authorize
+message Authorise {
+  required bytes byzcoinid = 1;
+}
+
+// AuthoriseReply - deprecated, please use AuthorizeReply
+message AuthoriseReply {
+}
+
 // Authorize is used to add the given ByzCoinID into the list of
 // authorised IDs. To be accepted, the ByzCoinID must be signed
 // using the private key of the conode.
 message Authorize {
   required bytes byzcoinid = 1;
-  required bytes signature = 2;
+  optional sint64 timestamp = 2;
+  optional bytes signature = 3;
 }
 
 // AuthorizeReply is returned upon successful authorisation.
