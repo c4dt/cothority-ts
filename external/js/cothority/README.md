@@ -8,7 +8,7 @@ messages.
 
 Import the library using
 ```js
-import Cothority from "@dedis/cothority"
+import Cothority from "@c4dt/cothority"
 ```
 
 Check out the example in index.html for a browser-based usage
@@ -113,12 +113,12 @@ Steps to use `js/cothority` as a local module for a local external app:
 3) From the root folder of the external app, link the new package
 
 ```bash
-(external_app) $ npm link @dedis/cothority
+(external_app) $ npm link @c4dt/cothority
 ```
 
 4) To unlink
 
 ```bash
-(external_app) $ npm unlink @dedis/cothority
+(external_app) $ npm unlink @c4dt/cothority
 (cothority/external/js/cothority) $ npm unlink
 ```
