@@ -3,6 +3,7 @@ import * as calypso from "./calypso";
 import * as contracts from "./byzcoin/contracts";
 import * as darc from "./darc";
 import * as network from "./network";
+import * as safeai from "./safeai";
 import * as skipchain from "./skipchain";
 import * as status from "./status";
 
@@ -12,6 +13,7 @@ export {
     contracts,
     darc,
     network,
+    safeai,
     skipchain,
     status,
 };

@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message GetTemplates {}
+message GotTemplates {
+	repeated string templates = 1;
+}
