@@ -1,28 +1,18 @@
-import { IConnection, WebSocketConnection } from "../network/connection";
+import { IConnection, WebSocketConnection } from "../network/connections";
 import { Roster } from "../network/proto";
-import { StatusRequest, StatusResponse } from "./proto";
+import { status as proto } from "../protobuf/proto";
+
 
 /**
  * RPC to talk with the status service of the conodes
  */
 export default class StatusRPC {
-    static serviceName = "Status";
-
-    private conn: IConnection[];
-    private timeout: number;
+    private conns: IConnection[];
 
     constructor(roster: Roster) {
-        this.timeout = 10 * 1000;
-        this.conn = roster.list
-            .map((srvid) => new WebSocketConnection(srvid.getWebSocketAddress(), StatusRPC.serviceName));
-    }
-
-    /**
-     * Set a new timeout value for the next requests
-     * @param value Timeout in ms
-     */
-    setTimeout(value: number): void {
-        this.timeout = value;
+        this.conns = roster.list.map(srvid =>
+            new WebSocketConnection(srvid.getWebSocketAddress() + "/Status/Request")
+        );
     }
 
     /**
@@ -30,13 +20,13 @@ export default class StatusRPC {
      * @param index Index of the server identity
      * @returns a promise that resolves with the status response
      */
-    async getStatus(index: number = 0): Promise<StatusResponse> {
-        if (index >= this.conn.length || index < 0) {
+    async getStatus(index: number = 0): Promise<proto.Response> {
+        if (index >= this.conns.length || index < 0) {
             throw new Error("Index out of bound for the roster");
         }
 
-        this.conn[index].setTimeout(this.timeout);
-
-        return (await this.conn[index].send(new StatusRequest(), StatusResponse)) as StatusResponse;
+        const conn = this.conns[index];
+        await conn.sendmsg(proto.Request.encode(new proto.Request()).finish());
+        return proto.Response.decode(await conn.recvmsg());
     }
 }
