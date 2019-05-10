@@ -1,4 +1,5 @@
 import { IConnection, WebSocketConnection } from "../network/connections";
+import rpc from "../network/protobuf";
 import { Roster } from "../network/proto";
 import { status as proto } from "../protobuf/proto";
 
@@ -25,8 +26,6 @@ export default class StatusRPC {
             throw new Error("Index out of bound for the roster");
         }
 
-        const conn = this.conns[index];
-        await conn.sendmsg(proto.Request.encode(new proto.Request()).finish());
-        return proto.Response.decode(await conn.recvmsg());
+        return await rpc(this.conns[index], new proto.Request(), proto.Response);
     }
 }
