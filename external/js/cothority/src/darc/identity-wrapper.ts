@@ -1,3 +1,4 @@
+import Ed25519Point from "@dedis/kyber/curve/edwards25519/point";
 import { Message } from "protobufjs/light";
 import { registerMessage } from "../protobuf";
 import IdentityDarc from "./identity-darc";
@@ -18,11 +19,21 @@ export default class IdentityWrapper extends Message<IdentityWrapper> {
      * fromIdentity returns an IdentityWrapper for a given Identity
      */
     static fromIdentity(id: IIdentity): IdentityWrapper {
-        if (id.toString().startsWith("ed25519:")) {
-            return new IdentityWrapper({ed25519: id as IdentityEd25519});
+        return this.fromString(id.toString());
+    }
+
+    /**
+     * fromString returns an IdentityWrapper for a given Identity represented as string
+     */
+    static fromString(idStr: string): IdentityWrapper {
+        if (idStr.startsWith("ed25519:")) {
+            const point = Buffer.concat([Ed25519Point.MARSHAL_ID, Buffer.from(idStr.slice(8), "hex")]);
+            const id = new IdentityEd25519({point});
+            return new IdentityWrapper({ed25519: id});
         }
-        if (id.toString().startsWith("darc:")) {
-            return new IdentityWrapper({darc: id as IdentityDarc});
+        if (idStr.startsWith("darc:")) {
+            const id = new IdentityDarc({id: Buffer.from(idStr.slice(5), "hex")});
+            return new IdentityWrapper({darc: id});
         }
     }
 

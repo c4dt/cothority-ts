@@ -1,3 +1,5 @@
+import { CalypsoReadInstance } from "src/lib/cothority/calypso";
+import Rules from "src/lib/cothority/darc/rules";
 import { createHash, randomBytes } from "crypto";
 import Long from "long";
 import { Message, Properties } from "protobufjs/light";
@@ -383,9 +385,10 @@ export default class SpawnerInstance extends Instance {
             throw new Error("account balance not high enough for spawning a darc + calypso writer");
         }
 
-        const cwDarc = newDarc([ident[0]], ident,
+        const cwDarc = newDarc([ident[0]], [ident[0]],
             Buffer.from("calypso write protection " + randomBytes(8).toString("hex")),
-            ["spawn:calypsoRead"]);
+            ["spawn:" + CalypsoReadInstance.contractID]);
+        ident.slice(1).forEach((id) => cwDarc.rules.appendToRule("spawn:calypsoRead", id, Rules.OR));
         const d = await this.spawnDarc(coinInst, signers, cwDarc);
 
         const write = await Write.createWrite(lts.id, d[0].id, lts.X, key);

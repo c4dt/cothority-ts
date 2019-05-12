@@ -1,3 +1,4 @@
+import { Log } from "src/lib/cothority/log";
 import { Properties } from "protobufjs";
 import ByzCoinRPC from "./byzcoin-rpc";
 import Proof from "./proof";

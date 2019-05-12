@@ -95,13 +95,35 @@ export default class Rules extends Message<Rules> {
      * @param identity  the identity to append
      */
     setRule(action: string, identity: IIdentity): void {
+        this.setRuleExp(action, Buffer.from(identity.toString()));
+    }
+
+    /**
+     * Sets the expression of a rule. If the rule already exists, it will be replaced. If the
+     * rule does not exist yet, it will be appended to the list of rules.
+     * @param action the name of the rule
+     * @param expression the expression to put in the rule
+     */
+    setRuleExp(action: string, expression: Buffer) {
         const idx = this.list.findIndex((r) => r.action === action);
 
-        const nr = new Rule({action, expr: Buffer.from(identity.toString())});
+        const nr = new Rule({action, expr: expression});
         if (idx >= 0) {
             this.list[idx] = nr;
         } else {
             this.list.push(nr);
+        }
+    }
+
+    /**
+     * Removes a given rule from the list.
+     *
+     * @param action the action that will be removed.
+     */
+    removeRule(action: string) {
+        const pos = this.list.findIndex((rule) => rule.action === action);
+        if (pos >= 0) {
+            this.list.splice(pos);
         }
     }
 

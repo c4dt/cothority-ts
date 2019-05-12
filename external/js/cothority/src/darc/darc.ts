@@ -1,8 +1,10 @@
 import { createHash } from "crypto";
 import Long from "long";
 import { Message, Properties } from "protobufjs/light";
+import DarcInstance from "../byzcoin/contracts/darc-instance";
+import { Log } from "../log";
 import { EMPTY_BUFFER, registerMessage } from "../protobuf";
-import { IIdentity } from "./identity-wrapper";
+import IdentityWrapper, { IIdentity } from "./identity-wrapper";
 import Rules from "./rules";
 
 /**
@@ -34,6 +36,7 @@ export default class Darc extends Message<Darc> {
 
         return h.digest();
     }
+
     /**
      * @see README#Message classes
      */
@@ -139,6 +142,47 @@ export default class Darc extends Message<Darc> {
      */
     copy(): Darc {
         return Darc.decode(this.toBytes());
+    }
+
+    /**
+     * Checks whether the given rule can be matched by a multi-signature created by all
+     * signers. If the rule doesn't exist, it throws an error.
+     * Currently restrictions:
+     *  - only Rules.OR are supported. A Rules.AND or "(" will return an error.
+     *  - only one identity can be checked. If more identities are given, the function
+     *  returns an error.
+     *
+     * @param action the action to match
+     * @param signers all supposed signers for this action.
+     * @return the set of identities that match the rule.
+     */
+    async ruleMatch(action: string, signers: IIdentity[],
+                    getDarc: (id: Buffer) => Promise<Darc>): Promise<IIdentity[]> {
+        const rule = this.rules.getRule(action);
+        if (!rule) {
+            throw new Error("This rule doesn't exist");
+        }
+        if (signers.length !== 1) {
+            throw new Error("Currently only supports checking 1 identity");
+        }
+        const expr = rule.expr.toString();
+        if (expr.match(/(\(|\)|\&)/)) {
+            throw new Error("Cannot handle Rules.AND, (, ) for the moment.");
+        }
+        const ids = expr.split(Rules.OR);
+        for (const idStr of ids) {
+            const id = IdentityWrapper.fromString(idStr.trim());
+            if (id.toString() === signers[0].toString()) {
+                return signers;
+            }
+            if (id.darc) {
+                const d = await getDarc(id.darc.id);
+                if ((await d.ruleMatch(DarcInstance.commandSign, signers, getDarc)).length === 1) {
+                    return signers;
+                }
+            }
+        }
+        return [];
     }
 }
 

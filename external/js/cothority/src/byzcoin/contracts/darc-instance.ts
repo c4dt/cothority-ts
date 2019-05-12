@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import Long from "long";
 import { IIdentity } from "../../darc";
 import Darc from "../../darc/darc";
+import IdentityWrapper from "../../darc/identity-wrapper";
 import Rules from "../../darc/rules";
 import Signer from "../../darc/signer";
 import { Log } from "../../log";
@@ -173,6 +174,23 @@ export default class DarcInstance extends Instance {
         await this.rpc.sendTransactionAndWait(ctx, wait);
 
         return ctx.instructions[0].deriveId();
+    }
+
+    /**
+     * Checks whether the given rule can be matched by a multi-signature created by all
+     * signers. If the rule doesn't exist, this method silently returns 'false'.
+     * Currently only Rules.OR are supported. A Rules.AND or "(" will return an error.
+     * Currently only 1 signer is supported.
+     *
+     * @param action the action to match
+     * @param signers all supposed signers for this action.
+     */
+    async ruleMatch(action: string, signers: IIdentity[]): Promise<boolean> {
+        const ids = await this.darc.ruleMatch(action, signers, async (id: Buffer) => {
+            const di = await DarcInstance.fromByzcoin(this.rpc, id);
+            return di.darc;
+        });
+        return ids.length > 0;
     }
 }
 
