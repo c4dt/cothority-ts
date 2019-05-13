@@ -1,12 +1,12 @@
-import { CalypsoReadInstance } from "src/lib/cothority/calypso";
-import Rules from "src/lib/cothority/darc/rules";
 import { createHash, randomBytes } from "crypto";
 import Long from "long";
 import { Message, Properties } from "protobufjs/light";
+import { CalypsoReadInstance } from "../../calypso";
 import { CalypsoWriteInstance, Write } from "../../calypso/calypso-instance";
 import { LongTermSecret } from "../../calypso/calypso-rpc";
 import { IIdentity } from "../../darc";
 import Darc from "../../darc/darc";
+import Rules from "../../darc/rules";
 import Signer from "../../darc/signer";
 import ISigner from "../../darc/signer";
 import { Log } from "../../log";

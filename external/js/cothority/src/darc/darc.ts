@@ -2,7 +2,6 @@ import { createHash } from "crypto";
 import Long from "long";
 import { Message, Properties } from "protobufjs/light";
 import DarcInstance from "../byzcoin/contracts/darc-instance";
-import { Log } from "../log";
 import { EMPTY_BUFFER, registerMessage } from "../protobuf";
 import IdentityWrapper, { IIdentity } from "./identity-wrapper";
 import Rules from "./rules";
@@ -11,6 +10,7 @@ import Rules from "./rules";
  * Distributed Access Right Controls
  */
 export default class Darc extends Message<Darc> {
+    static readonly ruleSign = "_sign";
 
     /**
      * Get the id of the darc
@@ -177,7 +177,7 @@ export default class Darc extends Message<Darc> {
             }
             if (id.darc) {
                 const d = await getDarc(id.darc.id);
-                if ((await d.ruleMatch(DarcInstance.commandSign, signers, getDarc)).length === 1) {
+                if ((await d.ruleMatch(Darc.ruleSign, signers, getDarc)).length === 1) {
                     return signers;
                 }
             }

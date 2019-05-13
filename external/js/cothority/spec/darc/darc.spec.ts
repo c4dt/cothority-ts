@@ -35,8 +35,8 @@ describe("Darc Tests", () => {
             }
             return Promise.reject();
         };
-        expect((await d1.ruleMatch(DarcInstance.commandSign, [sig2], getDarc)).length).toBe(1);
-        expect((await d1.ruleMatch(DarcInstance.commandSign, [sig3], getDarc)).length).toBe(1);
-        expect((await d1.ruleMatch(DarcInstance.commandSign, [sig1], getDarc)).length).toBe(0);
+        expect((await d1.ruleMatch(Darc.ruleSign, [sig2], getDarc)).length).toBe(1);
+        expect((await d1.ruleMatch(Darc.ruleSign, [sig3], getDarc)).length).toBe(1);
+        expect((await d1.ruleMatch(Darc.ruleSign, [sig1], getDarc)).length).toBe(0);
     });
 });

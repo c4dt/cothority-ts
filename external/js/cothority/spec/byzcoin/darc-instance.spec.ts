@@ -1,5 +1,6 @@
 import ByzCoinRPC from "../../src/byzcoin/byzcoin-rpc";
 import DarcInstance, { newDarc } from "../../src/byzcoin/contracts/darc-instance";
+import Darc from "../../src/darc/darc";
 import IdentityDarc from "../../src/darc/identity-darc";
 import Rules from "../../src/darc/rules";
 import SignerEd25519 from "../../src/darc/signer-ed25519";
@@ -24,7 +25,7 @@ describe("DarcInstance Tests", () => {
         const di1 = await DarcInstance.spawn(rpc, darc.getBaseID(), [SIGNER], d1);
         const di2 = await DarcInstance.spawn(rpc, darc.getBaseID(), [SIGNER], d2);
         const di3 = await DarcInstance.spawn(rpc, darc.getBaseID(), [SIGNER], d3);
-        expect(di1.ruleMatch(DarcInstance.commandSign, [sig])).toBeTruthy();
-        expect(di1.ruleMatch(DarcInstance.commandSign, [new IdentityDarc({id: d2.getBaseID()})])).toBeTruthy();
+        expect(di1.ruleMatch(Darc.ruleSign, [sig])).toBeTruthy();
+        expect(di1.ruleMatch(Darc.ruleSign, [new IdentityDarc({id: d2.getBaseID()})])).toBeTruthy();
     });
 });

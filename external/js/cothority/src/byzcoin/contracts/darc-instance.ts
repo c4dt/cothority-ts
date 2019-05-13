@@ -12,7 +12,6 @@ import Instance, { InstanceID } from "../instance";
 
 export default class DarcInstance extends Instance {
     static readonly contractID = "darc";
-    static readonly commandSign = "_sign";
     static readonly commandEvolve = "evolve";
     static readonly argumentDarc = "darc";
 
@@ -81,7 +80,7 @@ export default class DarcInstance extends Instance {
 
     getSignerExpression(): Buffer {
         for (const rule of this.darc.rules.list) {
-            if (rule.action === DarcInstance.commandSign) {
+            if (rule.action === Darc.ruleSign) {
                 return rule.expr;
             }
         }
@@ -204,7 +203,7 @@ export function initRules(owners: IIdentity[], signers: IIdentity[]): Rules {
     const rules = new Rules();
 
     owners.forEach((o) => rules.appendToRule("invoke:darc.evolve", o, Rules.AND));
-    signers.forEach((s) => rules.appendToRule(DarcInstance.commandSign, s, Rules.OR));
+    signers.forEach((s) => rules.appendToRule(Darc.ruleSign, s, Rules.OR));
 
     return rules;
 }
