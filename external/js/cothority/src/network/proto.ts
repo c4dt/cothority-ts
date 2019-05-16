@@ -158,15 +158,15 @@ export class Roster extends Message<Roster> {
 export class ServerIdentity extends Message<ServerIdentity> {
 
     /**
-     * Converts a HTTP-S URL to a Wesocket URL. It convert 'http' to 'ws' and 'https' to 'wss'.
-     * Any other protocols are forbidden and will raise an error. It also remove any trailing '/'.
+     * Converts an HTTP-S URL to a Wesocket URL. It converts 'http' to 'ws' and 'https' to 'wss'.
+     * Any other protocols are forbidden and will raise an error. It also removes any trailing '/'.
      * Here are some examples:
      *      http://example.com:77        => ws://example.com:77
      *      https://example.com/path/    => wss:example.com/path
      *      https://example.com:443/     => wss:example.com
      *      tcp://127.0.0.1              => Error
-     * Note: It will NOT include the given port in the case its the default one (for example 80 or 443).
-     * Note: In the case there is many slashes at the end of the url, it will only remove one.
+     * Note: It will NOT include the given port in the case it's the default one (for example 80 or 443).
+     * Note: In the case there are many slashes at the end of the url, it will only remove one.
      * @param url   the given url field
      * @returns a websocket url
      */

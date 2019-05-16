@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Stop on error.
+# Stop on error
 set -e
 
 npm run build
@@ -20,6 +20,7 @@ if [ "$1" = "--link" ] || [ "$1" = "-l" ]; then
     cd dist/
     npm link
 else
+    # don't need the bundle when linking the package, neither the doc
     npm run bundle
     rm -rf doc dist/doc
     npm run doc

@@ -41,7 +41,7 @@ export default class SkipchainRPC {
      * @param maxHeight     maximum height of the skipchain
      * @returns a promise that resolves with the genesis block
      */
-    createSkipchain(baseHeight: number = 1, maxHeight: number = 3): Promise<StoreSkipBlockReply> {
+    createSkipchain(baseHeight: number = 4, maxHeight: number = 32): Promise<StoreSkipBlockReply> {
         const newBlock = new SkipBlock({roster: this.roster, maxHeight, baseHeight});
         const req = new StoreSkipBlock({newBlock});
 
