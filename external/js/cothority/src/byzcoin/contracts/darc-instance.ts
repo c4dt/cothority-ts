@@ -13,6 +13,7 @@ import Instance, { InstanceID } from "../instance";
 export default class DarcInstance extends Instance {
     static readonly contractID = "darc";
     static readonly commandEvolve = "evolve";
+    static readonly commandEvolveUnrestricted = "evolve_unrestricted";
     static readonly argumentDarc = "darc";
 
     /**
@@ -112,7 +113,8 @@ export default class DarcInstance extends Instance {
      * @param wait Number of blocks to wait for
      * @returns a promise that resolves with the new darc instance
      */
-    async evolveDarcAndWait(newD: Darc, signers: Signer[], wait: number): Promise<DarcInstance> {
+    async evolveDarcAndWait(newD: Darc, signers: Signer[], wait: number,
+                            unrestricted: boolean = false): Promise<DarcInstance> {
         if (!newD.getBaseID().equals(this.darc.getBaseID())) {
             throw new Error("not the same base id for the darc");
         }
@@ -124,8 +126,9 @@ export default class DarcInstance extends Instance {
         }
         const args = [new Argument({name: DarcInstance.argumentDarc,
             value: Buffer.from(Darc.encode(newD).finish())})];
+        const cmd = unrestricted ? DarcInstance.commandEvolveUnrestricted : DarcInstance.commandEvolve;
         const instr = Instruction.createInvoke(this.darc.getBaseID(),
-            DarcInstance.contractID, DarcInstance.commandEvolve, args);
+            DarcInstance.contractID, cmd, args);
 
         const ctx = new ClientTransaction({instructions: [instr]});
         await ctx.updateCounters(this.rpc, [signers]);

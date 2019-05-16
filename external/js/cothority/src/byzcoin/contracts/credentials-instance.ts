@@ -99,7 +99,7 @@ export default class CredentialsInstance extends Instance {
     static async fromByzcoin(bc: ByzCoinRPC, iid: InstanceID): Promise<CredentialsInstance> {
         return new CredentialsInstance(bc, await Instance.fromByzCoin(bc, iid));
     }
-    credential: CredentialStruct;
+    public credential: CredentialStruct;
 
     constructor(private rpc: ByzCoinRPC, inst: Instance) {
         super(inst);

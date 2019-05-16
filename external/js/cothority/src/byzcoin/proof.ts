@@ -121,6 +121,11 @@ export default class Proof extends Message<Proof> {
             return new Error("invalid root");
         }
 
+        if (SkipchainRPC.disableSignatureVerification) {
+            Log.warn("ignoring signatures");
+            return null;
+        }
+
         let publics = this.links[0].newRoster.getServicePublics(SkipchainRPC.serviceName);
         let prev = this.links[0].to;
 

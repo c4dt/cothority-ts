@@ -1,3 +1,4 @@
+import { Log } from "@c4dt/cothority/log";
 import { IConnection, RosterWSConnection, WebSocketConnection } from "../network/connection";
 import { Roster } from "../network/proto";
 import {
@@ -18,6 +19,7 @@ import { SkipBlock } from "./skipblock";
  * with a given roster
  */
 export default class SkipchainRPC {
+    static disableSignatureVerification: boolean = false;
     static serviceName = "Skipchain";
 
     private roster: Roster;
@@ -172,6 +174,11 @@ export default class SkipchainRPC {
         if (firstID && !blocks[0].computeHash().equals(firstID)) {
             // expect the first block to be a particular block
             return new Error("the first ID is not the one we have");
+        }
+
+        if (SkipchainRPC.disableSignatureVerification) {
+            Log.warn("ignoring Signatures");
+            return null;
         }
 
         for (let i = 1; i < blocks.length; i++) {
