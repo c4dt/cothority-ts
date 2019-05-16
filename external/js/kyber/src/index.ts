@@ -1,7 +1,7 @@
 import * as curve from "./curve";
-import * as sign from "./sign";
 import * as pairing from "./pairing";
-import PointFactory from './point-factory';
+import PointFactory from "./point-factory";
+import * as sign from "./sign";
 
 export interface Group {
   /**
@@ -268,11 +268,11 @@ export {
   sign,
   pairing,
   PointFactory,
-}
+};
 
 export default {
   curve,
   sign,
   pairing,
   PointFactory,
-}
+};
